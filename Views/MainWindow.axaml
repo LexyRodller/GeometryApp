@@ -1,0 +1,135 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:GeometryApp.ViewModels"
+        Title="Geometry App" Width="700" Height="600"
+        x:Class="GeometryApp.Views.MainWindow"
+        x:DataType="vm:GeometryViewModel"
+        Background="#FFE6F2FF">
+
+    <Design.DataContext>
+        <vm:GeometryViewModel />
+    </Design.DataContext>
+
+    <Window.Styles>
+        <Style Selector="Button">
+            <Setter Property="Background" Value="#FF99C2FF"/>
+            <Setter Property="Foreground" Value="Black"/>
+            <Setter Property="BorderBrush" Value="#FF6699FF"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="5"/>
+        </Style>
+
+        <Style Selector="Button:pointerover">
+            <Setter Property="Background" Value="#FF80B3FF"/>
+        </Style>
+
+        <Style Selector="ScrollViewer">
+            <Setter Property="Background" Value="#FFD9ECFF"/>
+        </Style>
+
+        <Style Selector="ScrollBar">
+            <Setter Property="Background" Value="#FFC4E0FF"/>
+        </Style>
+
+        <Style Selector="ScrollBar:vertical Thumb">
+            <Setter Property="Background" Value="#FF4DA6FF"/>
+            <Setter Property="MinHeight" Value="20"/>
+        </Style>
+
+        <Style Selector="TextBox">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="#FF99C2FF"/>
+        </Style>
+
+        <Style Selector="ComboBox">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="#FF99C2FF"/>
+        </Style>
+    </Window.Styles>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Grid.Column="0" Margin="10" Spacing="10">
+            <TextBlock Text="Select Shape:" FontSize="16" Foreground="#FF0066CC"/>
+            <ComboBox ItemsSource="{Binding ShapeTypes}" 
+                      SelectedIndex="{Binding SelectedShapeIndex, Mode=TwoWay}" 
+                      Width="200"/>
+
+            <StackPanel IsVisible="{Binding IsEllipseSelected}" Spacing="5">
+                <TextBlock Text="Ellipse Properties" FontSize="14" Foreground="#FF0066CC"/>
+                <TextBlock Text="Enter integer or decimal values:" FontSize="12" Foreground="#FF666666"/>
+                <TextBox Watermark="Center X:" Text="{Binding EllipseCenterX}" />
+                <TextBox Watermark="Center Y:" Text="{Binding EllipseCenterY}" />
+                <TextBox Watermark="Radius X:" Text="{Binding EllipseRadiusX}" />
+                <TextBox Watermark="Radius Y:" Text="{Binding EllipseRadiusY}" />
+            </StackPanel>
+
+            <StackPanel IsVisible="{Binding IsLineSelected}" Spacing="5">
+                <TextBlock Text="Line Properties" FontSize="14" Foreground="#FF0066CC"/>
+                <TextBlock Text="Enter integer or decimal values:" FontSize="12" Foreground="#FF666666"/>
+                <TextBox Watermark="Start X:" Text="{Binding LineStartX}" />
+                <TextBox Watermark="Start Y:" Text="{Binding LineStartY}" />
+                <TextBox Watermark="End X:" Text="{Binding LineEndX}" />
+                <TextBox Watermark="End Y:" Text="{Binding LineEndY}" />
+            </StackPanel>
+
+            <StackPanel IsVisible="{Binding IsPointSelected}" Spacing="5">
+                <TextBlock Text="Point Properties" FontSize="14" Foreground="#FF0066CC"/>
+                <TextBlock Text="Enter integer or decimal values:" FontSize="12" Foreground="#FF666666"/>
+                <TextBox Watermark="X:" Text="{Binding PointX}" />
+                <TextBox Watermark="Y:" Text="{Binding PointY}" />
+            </StackPanel>
+
+            <StackPanel IsVisible="{Binding IsPolygonSelected}" Spacing="5">
+                <TextBlock Text="Polygon Properties" FontSize="14" Foreground="#FF0066CC"/>
+                
+                <TextBlock Text="1. First enter number of vertices and click 'OK'" 
+                          FontSize="12" Foreground="#FF666666" TextWrapping="Wrap"/>
+                <TextBlock Text="2. Then enter coordinates for each vertex" 
+                          FontSize="12" Foreground="#FF666666" TextWrapping="Wrap"/>
+                <TextBlock Text="3. Click 'Set Vertices' to confirm your input" 
+                          FontSize="12" Foreground="#FF666666" TextWrapping="Wrap"/>
+                <TextBlock Text="4. Finally click 'Calculate' to get results" 
+                          FontSize="12" Foreground="#FF666666" TextWrapping="Wrap"/>
+                
+                <StackPanel Orientation="Horizontal" Spacing="5" Margin="0,5">
+                    <TextBox Watermark="Number of vertices" 
+                             Width="150"
+                             Text="{Binding VertexCount, Mode=TwoWay}"/>
+                    <Button Content="OK" Command="{Binding GenerateVertexFieldsCommand}"/>
+                </StackPanel>
+                
+                <ScrollViewer MaxHeight="200" VerticalScrollBarVisibility="Auto">
+                    <ItemsControl ItemsSource="{Binding VertexInputs}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal" Spacing="5" Margin="0,5">
+                                    <TextBox Watermark="X" Width="80" 
+                                             Text="{Binding X, Mode=TwoWay}"/>
+                                    <TextBox Watermark="Y" Width="80" 
+                                             Text="{Binding Y, Mode=TwoWay}"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+                
+                <Button Content="Set Vertices" Command="{Binding SetPolygonVerticesCommand}"
+                        Margin="0,10" IsVisible="{Binding HasVertexInputs}"/>
+            </StackPanel>
+
+            <Button Content="Calculate" Command="{Binding ShowShapeInfoCommand}" Margin="0,10" />
+        </StackPanel>
+
+        <ScrollViewer Grid.Column="1" Margin="10">
+            <StackPanel Spacing="10">
+                <TextBlock Text="Shape Info:" FontSize="16" Foreground="#FF0066CC"/>
+                <TextBlock Text="{Binding ShapeInfo}" TextWrapping="Wrap" Foreground="#FF333333"/>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Window>
